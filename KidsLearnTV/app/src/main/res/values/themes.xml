@@ -1,0 +1,13 @@
+<resources>
+    <style name="Theme.KidsLearnTV" parent="Theme.Leanback">
+        <item name="colorPrimary">@color/kid_blue</item>
+        <item name="colorPrimaryVariant">@color/kid_purple</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="android:windowBackground">@color/background_dark</item>
+    </style>
+    <style name="Theme.KidsLearnTV.Fullscreen" parent="Theme.KidsLearnTV">
+        <item name="android:windowFullscreen">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+</resources>

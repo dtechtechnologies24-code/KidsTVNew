@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Kids Learn TV</string>
+    <string name="press_key_instruction">Press A-Z or 0-9 keys!\n Remote: Use keyboard buttons\n Keyboard: Press A-Z or 0-9</string>
+    <string name="image_description">Learning picture</string>
+</resources>
