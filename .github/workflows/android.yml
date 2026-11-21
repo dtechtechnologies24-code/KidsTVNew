@@ -3,7 +3,9 @@ name: Build Android APK
 on:
   workflow_dispatch:
   push:
-    branches: [main, master]
+    branches:
+      - main
+      - master
 
 jobs:
   build:
@@ -18,24 +20,27 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
+          cache: gradle
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Validate project structure
+        run: |
+          test -f KidsLearnTV/settings.gradle.kts
+          test -f KidsLearnTV/build.gradle.kts
+          test -f KidsLearnTV/app/build.gradle.kts
 
       - name: Build Debug APK
-        run: |
-          GRADLEW="$(find . -type f -name gradlew -print -quit)"
+        working-directory: KidsLearnTV
+        run: gradle assembleDebug --stacktrace
 
-          if [ -z "$GRADLEW" ]; then
-            echo "Error: gradlew file nahi mili. Repository mein Android Gradle project ya Gradle wrapper missing hai."
-            find . -maxdepth 4 -type f \( -name "settings.gradle" -o -name "settings.gradle.kts" \) -print
-            exit 1
-          fi
-
-          chmod +x "$GRADLEW"
-          cd "$(dirname "$GRADLEW")"
-          ./gradlew assembleDebug
+      - name: Locate generated APK
+        run: find . -type f -name "*.apk" -print
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: kids-tv-app
-          path: "**/build/outputs/apk/**/*.apk"
+          path: KidsLearnTV/app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
