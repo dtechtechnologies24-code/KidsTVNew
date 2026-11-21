@@ -3,7 +3,7 @@ name: Build Android APK
 on:
   workflow_dispatch:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
 
 jobs:
   build:
@@ -18,16 +18,24 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-          cache: gradle
-
-      - name: Grant execute permission
-        run: chmod +x gradlew
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug
+        run: |
+          GRADLEW="$(find . -type f -name gradlew -print -quit)"
+
+          if [ -z "$GRADLEW" ]; then
+            echo "Error: gradlew file nahi mili. Repository mein Android Gradle project ya Gradle wrapper missing hai."
+            find . -maxdepth 4 -type f \( -name "settings.gradle" -o -name "settings.gradle.kts" \) -print
+            exit 1
+          fi
+
+          chmod +x "$GRADLEW"
+          cd "$(dirname "$GRADLEW")"
+          ./gradlew assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: kids-tv-app
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: "**/build/outputs/apk/**/*.apk"
+          if-no-files-found: error
